@@ -1,12 +1,15 @@
 package com.example.studentmanagementapp;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
 @RestController
 public class StudentController {
-    HashMap<Integer, Student> db= new HashMap<>();
+
+    @Autowired
+    StudentService studentService;
 
 
     /**
@@ -16,7 +19,7 @@ public class StudentController {
      */
     @GetMapping("/get")
     public Student getStudent(@RequestParam("q") int regNo){
-        return db.get(regNo);
+        return studentService.getStudent(regNo);
     }
 
 
@@ -27,8 +30,7 @@ public class StudentController {
      */
     @PostMapping("/add")
     public String addStudent(@RequestBody Student student){
-        db.put(student.getRegNo(), student);
-        return "Student added Successfully!!!";
+        return studentService.addStudent(student);
     }
 
 
@@ -40,8 +42,7 @@ public class StudentController {
      */
     @PutMapping("/update-age")
     public Student updateAge(@RequestParam("id") int regNo,@RequestParam("age") int age){
-        db.get(regNo).setAge(age);
-        return db.get(regNo);
+        return  studentService.updateAge(regNo, age);
     }
 
 
@@ -52,7 +53,7 @@ public class StudentController {
      */
     @GetMapping("/get/{id}")
     public Student getStudentByPath(@PathVariable("id") int regNo){
-        return db.get(regNo);
+        return studentService.getStudent(regNo);
     }
 
 
@@ -63,8 +64,7 @@ public class StudentController {
      */
     @DeleteMapping("/delete")
     public String deleteStudentByParam(@RequestParam("id") int regNo){
-        db.remove(regNo);
-        return "Student Deleted Successfully!!!";
+        return studentService.deleteStudent(regNo);
     }
 
 
@@ -75,8 +75,7 @@ public class StudentController {
      */
     @DeleteMapping("/delete/{id}")
     public String deleteStudentByPath(@PathVariable("id") int regNo){
-        db.remove(regNo);
-        return "Student Deleted Successfully!!!";
+        return studentService.deleteStudent(regNo);
     }
 
 
@@ -88,26 +87,8 @@ public class StudentController {
      */
     @PutMapping("/update-course")
     public String updateCourseByBothParam(@RequestParam("id") int regNo, @RequestParam("course") String course){
-        db.get(regNo).setCourse(course);
-        return "Course Updated Successfully!!!";
+       return studentService.updateCourse(regNo, course);
     }
-
-
-
-
-    /**
-     * change course of a student  ----> Both as path variables
-     * @param regNo
-     * @param course
-     * @return
-     */
-    @PutMapping("/update-course/{id}/{course}")
-    public String updateCourseByBothPath(@PathVariable("id") int regNo, @PathVariable("course") String course){
-        db.get(regNo).setCourse(course);
-        return "Course Updated Successfully!!!";
-    }
-
-
 
 
     /**
@@ -116,10 +97,9 @@ public class StudentController {
      * @param course --> param
      * @return
      */
-    @PutMapping("/update-course/{id}")
+    @PutMapping("/update-course-ip/{id}")
     public String updateCourseByPathAndParam2(@PathVariable("id") int regNo, @RequestParam("course") String course){
-        db.get(regNo).setCourse(course);
-        return "Course Updated Successfully!!!";
+        return studentService.updateCourse(regNo, course);
     }
 
 
@@ -130,10 +110,22 @@ public class StudentController {
      * @param regNo  --> param
      * @return
      */
-    @PutMapping("/update-course-p/{cour}")
+
+    @PutMapping("/update-course-cp/{cour}")
     public String updateCourseByPathAndParam(@PathVariable("cour") String course, @RequestParam("id") int regNo ){
-        db.get(regNo).setCourse(course);
-        return "Course Updated Successfully!!!";
+        return studentService.updateCourse(regNo, course);
+    }
+
+
+    /**
+     * change course of a student  ----> Both as path variables
+     * @param regNo
+     * @param course
+     * @return
+     */
+    @PutMapping("/update-course-by-path/{id}/{course}")
+    public String updateCourseByBothPath(@PathVariable("id") int regNo, @PathVariable("course") String course){
+        return studentService.updateCourse(regNo, course);
     }
 
 
@@ -145,9 +137,7 @@ public class StudentController {
      */
     @PutMapping("/update-course-and-age")
     public String updateCourseAndAge(@RequestParam("id") int regNo, @RequestBody Student student){
-        db.get(regNo).setCourse(student.getCourse());
-        db.get(regNo).setAge(student.getAge());
-        return "Course and Age Updated Successfully!!!";
+        return studentService.updateCourseAndAge(regNo, student);
     }
 
 }
